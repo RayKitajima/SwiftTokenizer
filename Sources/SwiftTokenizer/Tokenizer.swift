@@ -42,12 +42,12 @@ private extension String {
     }
 }
 
-class Tokenizer {
+public class Tokenizer {
     let bpeRanks: [BytePair: Int]
     private let encoder: [String: Int]
     private let decoder: [Int: String]
 
-    init(config: TokenizerConfig) {
+    public init(config: TokenizerConfig) {
         let bpeMergesTxt = try! String(contentsOf: config.merges)
         let arr = bpeMergesTxt.split(separator: "\n").map { String($0) }
         var bpeRanks: [BytePair: Int] = [:]
@@ -67,7 +67,7 @@ class Tokenizer {
         decoder = Utils.invert(encoder)
     }
 
-    func byteEncode(text: String) -> [String] {
+    public func byteEncode(text: String) -> [String] {
         let RE = #"'s|'t|'re|'ve|'m|'ll|'d| ?\p{L}+| ?\p{N}+| ?[^\s\p{L}\p{N}]+|\s+(?!\S)|\s+"#
         let tokens = text.ranges(of: RE).map { String(text[$0]) }
         return tokens.map { token -> String in
@@ -87,7 +87,7 @@ class Tokenizer {
         return s
     }
 
-    func bpe(token: String) -> String {
+    public func bpe(token: String) -> String {
         if token.count <= 1 {
             return token
         }
@@ -134,29 +134,29 @@ class Tokenizer {
         return word.joined(separator: " ")
     }
 
-    func appendBOS(tokens: [Int]) -> [Int] {
+    public func appendBOS(tokens: [Int]) -> [Int] {
         return [encoder["<s>"]!] + tokens
     }
 
-    func appendEOS(tokens: [Int]) -> [Int] {
+    public func appendEOS(tokens: [Int]) -> [Int] {
         return tokens + [encoder["</s>"]!]
     }
 
-    func stripBOS(tokens: [Int]) -> [Int] {
+    public func stripBOS(tokens: [Int]) -> [Int] {
         if tokens[0] == encoder["<s>"]! {
             return Array(tokens[1 ..< tokens.count])
         }
         return tokens
     }
 
-    func stripEOS(tokens: [Int]) -> [Int] {
+    public func stripEOS(tokens: [Int]) -> [Int] {
         if tokens[tokens.count - 1] == encoder["</s>"]! {
             return Array(tokens[0 ..< tokens.count - 1])
         }
         return tokens
     }
 
-    func tokenize(text: String) -> [String] {
+    public func tokenize(text: String) -> [String] {
         var tokens: [String] = []
         for token in byteEncode(text: text) {
             let xx = bpe(token: token).split(separator: " ").map { String($0) }
@@ -165,11 +165,11 @@ class Tokenizer {
         return tokens
     }
 
-    func encode(text: String) -> [Int] {
+    public func encode(text: String) -> [Int] {
         return tokenize(text: text).map { encoder[$0]! }
     }
 
-    func decode(tokens: [Int]) -> String {
+    public func decode(tokens: [Int]) -> String {
         let text = tokens.map { decoder[$0]! }.joined(separator: "")
         let utfCodepoints = text.map { byteDecoder[String($0)]! }
         return String(decoding: utfCodepoints, as: UTF8.self)
