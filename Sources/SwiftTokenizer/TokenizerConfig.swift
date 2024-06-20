@@ -7,7 +7,7 @@ import Foundation
         - vocab: resource URL to vocab.json file in the bundle (e.g. Bundle.module.url(forResource: "vocab", withExtension: "json")!)
         - merges: resource URL to merges.txt file in the bundle (e.g. Bundle.module.url(forResource: "merges", withExtension: "txt")!)
 */
-struct TokenizerConfig {
-    let vocab: URL
-    let merges: URL
+public struct TokenizerConfig {
+    public let vocab: URL
+    public let merges: URL
 }
