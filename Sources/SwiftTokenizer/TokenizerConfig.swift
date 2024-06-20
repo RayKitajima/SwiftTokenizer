@@ -10,4 +10,9 @@ import Foundation
 public struct TokenizerConfig {
     public let vocab: URL
     public let merges: URL
+
+    public init(vocab: URL, merges: URL) {
+        self.vocab = vocab
+        self.merges = merges
+    }
 }
